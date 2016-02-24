@@ -16,8 +16,6 @@
 
 package com.stratio.receiver
 
-import java.util
-
 import com.rabbitmq.client.QueueingConsumer.Delivery
 import org.joda.time.DateTime
 
@@ -35,19 +33,18 @@ import scala.collection.JavaConverters._
 private[receiver]
 class RabbitMQInputDStream(@transient ssc_ : StreamingContext,
                             params: Map[String, String]
-                            ) extends ReceiverInputDStream[String](ssc_) with Logging {
+                            ) extends ReceiverInputDStream[RabbitMQMessage](ssc_) with Logging {
 
   private val storageLevelParam: String = params.getOrElse("storageLevel", "MEMORY_AND_DISK_SER_2")
 
-  override def getReceiver(): Receiver[String] = {
-
+  override def getReceiver(): Receiver[RabbitMQMessage] = {
     new RabbitMQReceiver(params, StorageLevel.fromString(storageLevelParam))
   }
 }
 
 private[receiver]
 class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
-  extends Receiver[String](storageLevel) with Logging {
+  extends Receiver[RabbitMQMessage](storageLevel) with Logging {
 
   private val host: String = params.getOrElse("host", "localhost")
   private val rabbitMQQueueName: Option[String] = params.get("queueName")
@@ -57,6 +54,7 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
   private val vHost: Option[String] = params.get("vHost")
   private val username: Option[String] = params.get("username")
   private val password: Option[String] = params.get("password")
+  private val prefetchCount: Int = params.getOrElse("prefetchCount", "1").toInt
   private val x_max_length: Option[String] = params.get("x-max-length")
   private val x_message_ttl: Option[String] = params.get("x-message-ttl")
   private val x_expires: Option[String] = params.get("x-expires")
@@ -94,18 +92,19 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
 
     try {
       val queueName: String = getQueueName(channel)
-  
+
       log.info("RabbitMQ Input waiting for messages")
       val consumer: QueueingConsumer = new QueueingConsumer(channel)
       log.info("start consuming data")
+      channel.basicQos(prefetchCount)
       channel.basicConsume(queueName, false, consumer)
   
       while (!isStopped()) {
         log.info("waiting for data")
         val delivery: Delivery = consumer.nextDelivery()
         log.info("storing data")
-        store(new Predef.String(delivery.getBody))
-        channel.basicAck(delivery.getEnvelope.getDeliveryTag,false)
+        store(new RabbitMQMessage(delivery.getProperties, new Predef.String(delivery.getBody)))
+        channel.basicAck(delivery.getEnvelope.getDeliveryTag, false)
       }
 
     } catch {
@@ -113,8 +112,8 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
     } 
     finally {
       log.info("it has been stopped")
-      try { channel.close } catch { case _: Throwable => log.error("error on close channel, ignoring")}
-      try { connection.close} catch { case _: Throwable => log.error("error on close connection, ignoring")}
+      try { channel.close() } catch { case _: Throwable => log.error("error on close channel, ignoring")}
+      try { connection.close() } catch { case _: Throwable => log.error("error on close connection, ignoring")}
       restart("Trying to connect again")
     }
   }
@@ -128,7 +127,7 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
     channel.exchangeDeclare(exchangeName, exchangeType, true)
 
     log.info("declaring queue")
-    channel.queueDeclare(queueName, true, false, false, getParams.asJava)
+    channel.queueDeclare(queueName, true, false, false, getParams().asJava)
 
     // Bind the exchange to the queue.
     routingKeys match {

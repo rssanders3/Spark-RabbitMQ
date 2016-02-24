@@ -20,7 +20,6 @@ import scala.collection.JavaConverters._
 
 import scala.reflect.ClassTag
 
-import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.StreamingContext
 import org.apache.spark.streaming.api.java.{JavaReceiverInputDStream, JavaStreamingContext}
 import org.apache.spark.streaming.dstream.ReceiverInputDStream
@@ -32,7 +31,7 @@ object RabbitMQUtils {
    * @param ssc          StreamingContext object
    * @param params       RabbitMQ params
    */
-  def createStream(ssc: StreamingContext, params: Map[String, String]): ReceiverInputDStream[String] = {
+  def createStream(ssc: StreamingContext, params: Map[String, String]): ReceiverInputDStream[RabbitMQMessage] = {
     new RabbitMQInputDStream(ssc, params)
   }
 
@@ -42,8 +41,8 @@ object RabbitMQUtils {
    * @param params       RabbitMQ params
    */
   def createJavaStream(jssc: JavaStreamingContext,
-                       params: java.util.Map[String, String]): JavaReceiverInputDStream[String] = {
-    implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[String]]
+                       params: java.util.Map[String, String]): JavaReceiverInputDStream[RabbitMQMessage] = {
+    implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[RabbitMQMessage]]
     createStream(jssc.ssc, params.asScala.toMap)
   }
 

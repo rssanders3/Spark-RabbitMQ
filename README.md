@@ -24,7 +24,7 @@ The first one is to add the next dependency in your pom.xml:
 The other one is to clone the full repository and build the project:
 
 ```
-git clone https://github.com/Stratio/RabbitMQ-Receiver.git
+git clone https://github.com/rsanders3/RabbitMQ-Receiver.git
 mvn clean install
 ```
 
@@ -64,6 +64,7 @@ JavaReceiverInputDStream receiverStream = RabbitMQUtils.createJavaStream(javaSpa
 | vHost                     | RabbitMQ vHost               | Yes                                  |
 | username                  | RabbitMQ username            | Yes                                  |
 | password                  | RabbitMQ password            | Yes                                  |
+| prefetchCount             | RabbitMQ Prefetch Count      | Yes                                  |
 | storageLevel              | Apache Spark storage level   | Yes (default: MEMORY_AND_DISK_SER_2) |
 | x-max-length              | RabbitMQ queue property      | Yes                                  |
 | x-message-ttl             | RabbitMQ queue property      | Yes                                  |
