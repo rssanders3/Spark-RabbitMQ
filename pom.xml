@@ -44,8 +44,8 @@
     </description>
 
     <scm>
-        <url>https://github.com/Stratio/RabbitMQ-Receiver.git</url>
-        <connection>scm:git:git://github.com/Stratio/RabbitMQ-Receiver.git</connection>
+        <url>https://github.com/rssanders3/RabbitMQ-Receiver.git</url>
+        <connection>scm:git:git://github.com/rssanders3/RabbitMQ-Receiver.git</connection>
         <developerConnection>scm:git:git@github.com:Stratio/RabbitMQ-Receiver.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
