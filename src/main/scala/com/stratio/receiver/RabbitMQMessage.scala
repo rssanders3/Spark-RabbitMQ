@@ -8,6 +8,10 @@ import com.rabbitmq.client.BasicProperties
 class RabbitMQMessage(propertiesInput: BasicProperties, bodyInput: String) extends Serializable {
   var properties = new RabbitMQMessageProperties(propertiesInput)
   var body = bodyInput
+
+  override def toString: String = {
+    "{properties:" + properties.toString + ", body:" + body + "}"
+  }
 }
 
 class RabbitMQMessageProperties(basicProperties: BasicProperties) extends Serializable {
@@ -24,4 +28,6 @@ class RabbitMQMessageProperties(basicProperties: BasicProperties) extends Serial
   var messageType = basicProperties.getType
   var userId = basicProperties.getUserId
   var appId = basicProperties.getAppId
+
+  override def toString = s"{contentType:$contentType, contentEncoding:$contentEncoding, headers:$headers, deliveryMode:$deliveryMode, priority:$priority, correlationId:$correlationId, replyTo:$replyTo, expiration:$expiration, messageId:$messageId, timestamp:$timestamp, messageType:$messageType, userId:$userId, appId:$appId}"
 }

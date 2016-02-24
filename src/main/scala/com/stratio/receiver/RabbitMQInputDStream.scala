@@ -54,7 +54,7 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
   private val vHost: Option[String] = params.get("vHost")
   private val username: Option[String] = params.get("username")
   private val password: Option[String] = params.get("password")
-  private val prefetchCount: Int = params.getOrElse("prefetchCount", "1").toInt
+  private val prefetchCount: Int = params.getOrElse("prefetchCount", "0").toInt //default 0 which sets it to unlimited
   private val x_max_length: Option[String] = params.get("x-max-length")
   private val x_message_ttl: Option[String] = params.get("x-message-ttl")
   private val x_expires: Option[String] = params.get("x-expires")
