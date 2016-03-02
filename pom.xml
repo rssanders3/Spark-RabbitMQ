@@ -36,7 +36,7 @@
         <module>spark-rabbitmq_1.5</module>
     </modules>
 
-    <url>https://github.com/Stratio/RabbitMQ-Receiver</url>
+    <url>https://github.com/rssanders3/RabbitMQ-Receiver</url>
     <name>Spark Streaming RabbitMQ Receiver</name>
 
     <description>
@@ -46,7 +46,7 @@
     <scm>
         <url>https://github.com/rssanders3/RabbitMQ-Receiver.git</url>
         <connection>scm:git:git://github.com/rssanders3/RabbitMQ-Receiver.git</connection>
-        <developerConnection>scm:git:git@github.com:Stratio/RabbitMQ-Receiver.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:rssanders3/RabbitMQ-Receiver.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 

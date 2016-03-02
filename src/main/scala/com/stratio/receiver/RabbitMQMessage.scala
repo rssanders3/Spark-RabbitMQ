@@ -115,9 +115,8 @@ class RabbitMQMessageProperties(basicProperties: BasicProperties) extends Serial
       map.keySet().toArray.foreach(key => {
         val keyStr = key.toString
         val obj = map.get(keyStr)
-        val objClass = obj.getClass
         var newObj: Object = null
-        if (objClass.toString.contains("ByteArrayLongString")) {
+        if (obj.getClass.toString.contains("ByteArrayLongString")) {
           newObj = obj.toString
         } else {
           newObj = obj
