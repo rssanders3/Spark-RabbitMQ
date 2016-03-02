@@ -4,15 +4,30 @@ import java.util
 import java.util.Date
 
 import com.rabbitmq.client.BasicProperties
-
-import scala.util.parsing.json.{JSON, JSONObject}
+import org.apache.spark.Logging
 
 /**
  * Created by robertsanders on 2/23/16.
  */
-class RabbitMQMessage(basicProperties: BasicProperties, body: String) extends Serializable {
+class RabbitMQMessage(deliveryTag: Long, exchange: String, routingKey: String, redelivered: Boolean, basicProperties: BasicProperties, body: String) extends Serializable {
 
   var properties = new RabbitMQMessageProperties(basicProperties)
+
+  def getDeliveryTag: Long = {
+    deliveryTag
+  }
+
+  def getExchange: String = {
+    exchange
+  }
+
+  def getRoutingKey: String = {
+    routingKey
+  }
+
+  def isRedelivered: Boolean = {
+    redelivered
+  }
 
   def getProperties: RabbitMQMessageProperties = {
     properties
@@ -22,12 +37,11 @@ class RabbitMQMessage(basicProperties: BasicProperties, body: String) extends Se
     body
   }
 
-  override def toString: String = {
-    "{properties:" + properties.toString + ", body:" + body + "}"
-  }
+  override def toString = s"{ 'deliveryTag': $deliveryTag, 'exchange': '$exchange', 'routingKey': '$routingKey', 'redelivered': $redelivered, 'properties': ${properties.toString}, 'body': '$body' }"
+
 }
 
-class RabbitMQMessageProperties(basicProperties: BasicProperties) extends Serializable {
+class RabbitMQMessageProperties(basicProperties: BasicProperties) extends Serializable with Logging {
 
   var contentType = basicProperties.getContentType
   var contentEncoding = basicProperties.getContentEncoding
@@ -110,13 +124,11 @@ class RabbitMQMessageProperties(basicProperties: BasicProperties) extends Serial
         }
         newMap.put(keyStr, newObj)
       })
-    } catch{
-      case e: Exception => {
-        println(e)
-      }
+    } catch {
+      case e: Exception => log.error(e.toString)
     }
-    return newMap
+    newMap
   }
 
-  override def toString = s"{contentType:$contentType, contentEncoding:$contentEncoding, headers:$headers, deliveryMode:$deliveryMode, priority:$priority, correlationId:$correlationId, replyTo:$replyTo, expiration:$expiration, messageId:$messageId, timestamp:$timestamp, messageType:$messageType, userId:$userId, appId:$appId}"
+  override def toString = s"{ 'contentType': '$contentType', 'contentEncoding': '$contentEncoding', 'headers': $headers, 'deliveryMode': $deliveryMode, 'priority': $priority, correlationId:$correlationId, 'replyTo': '$replyTo', 'expiration': '$expiration', 'messageId': '$messageId', 'timestamp': '$timestamp', 'messageType': '$messageType', 'userId': '$userId', 'appId': '$appId' }"
 }

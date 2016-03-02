@@ -16,7 +16,6 @@
 
 package com.stratio.receiver
 
-import com.stratio.receiver.RabbitMQUtils
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.streaming.{Seconds, StreamingContext}
@@ -44,6 +43,7 @@ object RabbitMQConsumer {
       "vHost" -> "rabbitmq-vHost",
       "username" -> "rabbitmq-user",
       "password" -> "rabbitmq-password",
+      "prefetchCount" -> "1",
       "x-max-length" -> "value",
       "x-max-length" -> "value",
       "x-message-ttl" -> "value",

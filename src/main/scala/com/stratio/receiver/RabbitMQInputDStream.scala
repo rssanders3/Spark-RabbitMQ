@@ -100,10 +100,17 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
       channel.basicConsume(queueName, false, consumer)
   
       while (!isStopped()) {
-        log.info("waiting for data")
+        //waiting for data
         val delivery: Delivery = consumer.nextDelivery()
-        log.info("storing data")
-        store(new RabbitMQMessage(delivery.getProperties, new Predef.String(delivery.getBody)))
+        //storing data
+        store(new RabbitMQMessage(
+          delivery.getEnvelope.getDeliveryTag,
+          delivery.getEnvelope.getExchange,
+          delivery.getEnvelope.getRoutingKey,
+          delivery.getEnvelope.isRedeliver,
+          delivery.getProperties,
+          new Predef.String(delivery.getBody)
+        ))
         channel.basicAck(delivery.getEnvelope.getDeliveryTag, false)
       }
 
