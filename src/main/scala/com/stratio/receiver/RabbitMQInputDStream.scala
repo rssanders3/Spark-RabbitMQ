@@ -48,6 +48,7 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
 
   private val host: String = params.getOrElse("host", "localhost")
   private val rabbitMQQueueName: Option[String] = params.get("queueName")
+  private val enableExchange: Boolean = params.getOrElse("enableExchange", "true").toBoolean
   private val exchangeName: String = params.getOrElse("exchangeName", "rabbitmq-exchange")
   private val exchangeType: String = params.getOrElse("exchangeType", "direct")
   private val routingKeys: Option[String] = params.get("routingKeys")
@@ -130,8 +131,13 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
     val queueName = checkQueueName()
 
     // Connect to the exchange.
-    log.info(s"declaring exchange '$exchangeName' of type '$exchangeType'")
-    channel.exchangeDeclare(exchangeName, exchangeType, true)
+    if(enableExchange) {
+      log.info(s"declaring exchange '$exchangeName' of type '$exchangeType'")
+      channel.exchangeDeclare(exchangeName, exchangeType, true)
+    }
+     else {
+      log.info("You have opted to not enable exchange")
+    }
 
     log.info("declaring queue")
     channel.queueDeclare(queueName, true, false, false, getParams().asJava)

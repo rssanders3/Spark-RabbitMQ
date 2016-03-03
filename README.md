@@ -58,6 +58,7 @@ JavaReceiverInputDStream receiverStream = RabbitMQUtils.createJavaStream(javaSpa
 |---------------------------|------------------------------|--------------------------------------|
 | host                      | RabbitMQ host                | Yes (default: localhost)             |
 | queueName                 | Queue name                   | Yes                                  |
+| enableExchange            | Enable Exchange              | Yes (default: true)                  |
 | exchangeName              | Exchange name                | Yes (default: rabbitmq-exchange)     |
 | exchangeType              | Exchange type                | Yes (default: direct)                |
 | routingKeys               | Routing keys comma separated | Yes                                  |
