@@ -48,6 +48,7 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
 
   private val host: String = params.getOrElse("host", "localhost")
   private val rabbitMQQueueName: Option[String] = params.get("queueName")
+  private val queueDurable: Boolean = params.getOrElse("queueDurable", "false").toBoolean
   private val enableExchange: Boolean = params.getOrElse("enableExchange", "true").toBoolean
   private val exchangeName: String = params.getOrElse("exchangeName", "rabbitmq-exchange")
   private val exchangeType: String = params.getOrElse("exchangeType", "direct")
@@ -140,7 +141,7 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
     }
 
     log.info("declaring queue")
-    channel.queueDeclare(queueName, true, false, false, getParams().asJava)
+    channel.queueDeclare(queueName, queueDurable, false, false, getParams().asJava)
 
     // Bind the exchange to the queue.
     routingKeys match {

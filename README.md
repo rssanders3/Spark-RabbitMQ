@@ -54,26 +54,27 @@ JavaReceiverInputDStream receiverStream = RabbitMQUtils.createJavaStream(javaSpa
 
 ```
 
-| Parameter                 | Description                  | Optional                             |
-|---------------------------|------------------------------|--------------------------------------|
-| host                      | RabbitMQ host                | Yes (default: localhost)             |
-| queueName                 | Queue name                   | Yes                                  |
-| enableExchange            | Enable Exchange              | Yes (default: true)                  |
-| exchangeName              | Exchange name                | Yes (default: rabbitmq-exchange)     |
-| exchangeType              | Exchange type                | Yes (default: direct)                |
-| routingKeys               | Routing keys comma separated | Yes                                  |
-| vHost                     | RabbitMQ vHost               | Yes                                  |
-| username                  | RabbitMQ username            | Yes                                  |
-| password                  | RabbitMQ password            | Yes                                  |
-| prefetchCount             | RabbitMQ Prefetch Count      | Yes                                  |
-| storageLevel              | Apache Spark storage level   | Yes (default: MEMORY_AND_DISK_SER_2) |
-| x-max-length              | RabbitMQ queue property      | Yes                                  |
-| x-message-ttl             | RabbitMQ queue property      | Yes                                  |
-| x-expires                 | RabbitMQ queue property      | Yes                                  |
-| x-max-length-bytes        | RabbitMQ queue property      | Yes                                  |
-| x-dead-letter-exchange    | RabbitMQ queue property      | Yes                                  |
-| x-dead-letter-routing-key | RabbitMQ queue property      | Yes                                  |
-| x-max-priority            | RabbitMQ queue property      | Yes                                  |
+| Parameter                 | Description                     | Optional                             |
+|---------------------------|---------------------------------|--------------------------------------|
+| host                      | RabbitMQ host                   | Yes (default: localhost)             |
+| queueName                 | Queue name                      | Yes                                  |
+| queueDurable              | Declare if the queue is durable | Yes (default: false)                 |
+| enableExchange            | Enable Exchange                 | Yes (default: true)                  |
+| exchangeName              | Exchange name                   | Yes (default: rabbitmq-exchange)     |
+| exchangeType              | Exchange type                   | Yes (default: direct)                |
+| routingKeys               | Routing keys comma separated    | Yes                                  |
+| vHost                     | RabbitMQ vHost                  | Yes                                  |
+| username                  | RabbitMQ username               | Yes                                  |
+| password                  | RabbitMQ password               | Yes                                  |
+| prefetchCount             | RabbitMQ Prefetch Count         | Yes                                  |
+| storageLevel              | Apache Spark storage level      | Yes (default: MEMORY_AND_DISK_SER_2) |
+| x-max-length              | RabbitMQ queue property         | Yes                                  |
+| x-message-ttl             | RabbitMQ queue property         | Yes                                  |
+| x-expires                 | RabbitMQ queue property         | Yes                                  |
+| x-max-length-bytes        | RabbitMQ queue property         | Yes                                  |
+| x-dead-letter-exchange    | RabbitMQ queue property         | Yes                                  |
+| x-dead-letter-routing-key | RabbitMQ queue property         | Yes                                  |
+| x-max-priority            | RabbitMQ queue property         | Yes                                  |
 
 # License #
 
