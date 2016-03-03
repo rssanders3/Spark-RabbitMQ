@@ -153,12 +153,7 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
         }
       }
       case None => {
-        if(enableExchange) {
-          log.info("Exchange was declared. Binding exchange using empty routing key")
-          channel.queueBind(queueName, exchangeName, "")
-        } else {
-          log.info("Routing key not provided and exchange was not enabled. Skipping binding the queue.")
-        }
+        log.info("Routing key was not provided. Skipping binding to queue.")
       }
     }
     queueName
