@@ -37,25 +37,44 @@ class RabbitMQMessage(deliveryTag: Long, exchange: String, routingKey: String, r
     body
   }
 
-  override def toString = s"{ 'deliveryTag': $deliveryTag, 'exchange': '$exchange', 'routingKey': '$routingKey', 'redelivered': $redelivered, 'properties': ${properties.toString}, 'body': '$body' }"
+  override def toString = s"{ 'deliveryTag': $deliveryTag, 'exchange': '$exchange', 'routingKey': '$routingKey', 'redelivered': $redelivered, 'properties': $properties, 'body': '$body' }"
 
 }
 
 class RabbitMQMessageProperties(basicProperties: BasicProperties) extends Serializable with Logging {
 
-  var contentType = basicProperties.getContentType
-  var contentEncoding = basicProperties.getContentEncoding
-  var headers: util.Map[String, Object] = parseHeaders(basicProperties.getHeaders)
-  var deliveryMode = basicProperties.getDeliveryMode
-  var priority = basicProperties.getPriority
-  var correlationId = basicProperties.getCorrelationId
-  var replyTo = basicProperties.getReplyTo
-  var expiration = basicProperties.getExpiration
-  var messageId = basicProperties.getMessageId
-  var timestamp = basicProperties.getTimestamp
-  var messageType = basicProperties.getType
-  var userId = basicProperties.getUserId
-  var appId = basicProperties.getAppId
+  var contentType: String = null
+  var contentEncoding: String = null
+  var headers: util.Map[String, Object] = null
+  var deliveryMode: Integer = null
+  var priority: Integer = null
+  var correlationId: String = null
+  var replyTo: String = null
+  var expiration: String = null
+  var messageId: String = null
+  var timestamp: Date = null
+  var messageType: String = null
+  var userId: String = null
+  var appId: String = null
+
+  if (basicProperties != null) {
+    contentType = basicProperties.getContentType
+    contentEncoding = basicProperties.getContentEncoding
+    headers = parseHeaders(basicProperties.getHeaders)
+    deliveryMode = basicProperties.getDeliveryMode
+    priority = basicProperties.getPriority
+    correlationId = basicProperties.getCorrelationId
+    replyTo = basicProperties.getReplyTo
+    expiration = basicProperties.getExpiration
+    messageId = basicProperties.getMessageId
+    timestamp = basicProperties.getTimestamp
+    messageType = basicProperties.getType
+    userId = basicProperties.getUserId
+    appId = basicProperties.getAppId
+  } else {
+    log.warn("messageDelivery.basicProperties is null")
+  }
+
 
   def getContentType: String = {
     contentType
@@ -109,24 +128,29 @@ class RabbitMQMessageProperties(basicProperties: BasicProperties) extends Serial
     appId
   }
 
-  def parseHeaders(map: util.Map[String, Object]): util.Map[String, Object] = {
-    val newMap = new util.HashMap[String, Object]()
-    try {
-      map.keySet().toArray.foreach(key => {
-        val keyStr = key.toString
-        val obj = map.get(keyStr)
-        var newObj: Object = null
-        if (obj.getClass.toString.contains("ByteArrayLongString")) {
-          newObj = obj.toString
-        } else {
-          newObj = obj
-        }
-        newMap.put(keyStr, newObj)
-      })
-    } catch {
-      case e: Exception => log.error(e.toString)
+  def parseHeaders(headersMap: util.Map[String, Object]): util.Map[String, Object] = {
+    if (headersMap != null) {
+      val newHeaders = new util.HashMap[String, Object]()
+      try {
+        headersMap.keySet().toArray.foreach(key => {
+          val keyStr = key.toString
+          val obj = headersMap.get(keyStr)
+          var newObj: Object = null
+          if (obj.getClass.toString.contains("ByteArrayLongString")) {
+            newObj = obj.toString
+          } else {
+            newObj = obj
+          }
+          newHeaders.put(keyStr, newObj)
+        })
+      } catch {
+        case e: Exception => log.error(e.toString)
+      }
+      newHeaders
+    } else {
+      log.warn("messageDelivery.basicProperties.headers is null")
+      return null
     }
-    newMap
   }
 
   override def toString = s"{ 'contentType': '$contentType', 'contentEncoding': '$contentEncoding', 'headers': $headers, 'deliveryMode': $deliveryMode, 'priority': $priority, correlationId:$correlationId, 'replyTo': '$replyTo', 'expiration': '$expiration', 'messageId': '$messageId', 'timestamp': '$timestamp', 'messageType': '$messageType', 'userId': '$userId', 'appId': '$appId' }"
