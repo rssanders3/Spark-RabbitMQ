@@ -54,27 +54,54 @@ JavaReceiverInputDStream receiverStream = RabbitMQUtils.createJavaStream(javaSpa
 
 ```
 
-| Parameter                 | Description                     | Optional                             |
-|---------------------------|---------------------------------|--------------------------------------|
-| host                      | RabbitMQ host                   | Yes (default: localhost)             |
-| queueName                 | Queue name                      | Yes                                  |
-| queueDurable              | Declare if the queue is durable | Yes (default: false)                 |
-| enableExchange            | Enable Exchange                 | Yes (default: true)                  |
-| exchangeName              | Exchange name                   | Yes (default: rabbitmq-exchange)     |
-| exchangeType              | Exchange type                   | Yes (default: direct)                |
-| routingKeys               | Routing keys comma separated    | Yes                                  |
-| vHost                     | RabbitMQ vHost                  | Yes                                  |
-| username                  | RabbitMQ username               | Yes                                  |
-| password                  | RabbitMQ password               | Yes                                  |
-| prefetchCount             | RabbitMQ Prefetch Count         | Yes                                  |
-| storageLevel              | Apache Spark storage level      | Yes (default: MEMORY_AND_DISK_SER_2) |
-| x-max-length              | RabbitMQ queue property         | Yes                                  |
-| x-message-ttl             | RabbitMQ queue property         | Yes                                  |
-| x-expires                 | RabbitMQ queue property         | Yes                                  |
-| x-max-length-bytes        | RabbitMQ queue property         | Yes                                  |
-| x-dead-letter-exchange    | RabbitMQ queue property         | Yes                                  |
-| x-dead-letter-routing-key | RabbitMQ queue property         | Yes                                  |
-| x-max-priority            | RabbitMQ queue property         | Yes                                  |
+| Parameter                 | Description                                        | Optional                             |
+|---------------------------|----------------------------------------------------|--------------------------------------|
+| host                      | RabbitMQ host                                      | Yes (default: localhost)             |
+| queueName                 | Queue name                                         | Yes                                  |
+| queueDurable              | The queue will survive a server restart            | Yes (default: false)                 |
+| queueExclusive            | Restricted to this connection                      | Yes (default: false)                 |
+| queueAutoDelete           | Server will delete the queue when no longer in use | Yes (default: false)                 |
+| enableExchange            | Enable Exchange                                    | Yes (default: true)                  |
+| exchangeNames             | Comma separated list of Exchange names             | Yes (default: rabbitmq-exchange)     |
+| exchangeTypes             | Comma separated list of Exchange types             | Yes (default: direct)                |
+| routingKeys               | Routing keys comma separated                       | Yes                                  |
+| virtualHost               | RabbitMQ Virtual Host                              | Yes                                  |
+| username                  | RabbitMQ username                                  | Yes                                  |
+| password                  | RabbitMQ password                                  | Yes                                  |
+| prefetchCount             | Prefetch Count                                     | Yes (default: 0)                     |
+| channelCount              | Number of channel threads to spawn                 | Yes (default: 1)                     |
+| storageLevel              | Apache Spark storage level                         | Yes (default: MEMORY_AND_DISK_SER_2) |
+| x-max-length              | RabbitMQ queue property                            | Yes                                  |
+| x-message-ttl             | RabbitMQ queue property                            | Yes                                  |
+| x-expires                 | RabbitMQ queue property                            | Yes                                  |
+| x-max-length-bytes        | RabbitMQ queue property                            | Yes                                  |
+| x-dead-letter-exchange    | RabbitMQ queue property                            | Yes                                  |
+| x-dead-letter-routing-key | RabbitMQ queue property                            | Yes                                  |
+| x-max-priority            | RabbitMQ queue property                            | Yes                                  |
+
+# Updates from Previous Project #
+
+This project was forked from https://github.com/Stratio/Spark-RabbitMQ and includes a number of improvements:
+
+ * Returns more Message Data
+    * Message Delivery Tag
+    * Message Exchange
+    * Message Routing Key
+    * Message Redelivered
+    * Message Properties
+    * Message payload
+ * More control over how you connect to the RabbitMQ Queue
+    * Exchanges
+        * Are now optional
+        * Can define multiple
+    * Queues
+        * Can define durable
+        * Can define exclusive connection
+        * Can define auto delete
+ * Adding performance enhancements 
+    * Prefetch
+    * Multi-threading
+    
 
 # License #
 
