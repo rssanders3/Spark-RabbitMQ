@@ -235,7 +235,7 @@ class RabbitMQReceiver(params: Map[String, String], storageLevel: StorageLevel)
             }
           }
           case None => {
-            log.info("Routing key was not provided. Skipping binding to queue.")
+            log.warn("Routing key was not provided. Skipping binding exchange to queue.")
           }
         }
       })
